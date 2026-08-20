@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    width: 280px;
+    padding: 14px;
+    color: #222;
+  }
+  h1 {
+    font-size: 14px;
+    margin: 0 0 10px;
+  }
+  label {
+    display: block;
+    font-size: 12px;
+    color: #555;
+    margin-bottom: 4px;
+  }
+  input[type="text"] {
+    box-sizing: border-box;
+    padding: 6px;
+    font-size: 12.5px;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .cc-entry {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  .cc-entry input[type="text"] {
+    flex: 1;
+  }
+  .cc-entry button {
+    border: none;
+    background: none;
+    color: #999;
+    font-size: 15px;
+    cursor: pointer;
+    padding: 0 4px;
+    line-height: 1;
+  }
+  .cc-entry button:hover {
+    color: #c00;
+  }
+  #ccList {
+    margin-bottom: 6px;
+  }
+  #addCc {
+    font-size: 12px;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-bottom: 12px;
+  }
+  .status {
+    font-size: 11px;
+    color: #888;
+    margin-top: 6px;
+  }
+</style>
+</head>
+<body>
+  <h1>Conservice Auto CC</h1>
+
+  <div class="row">
+    <input type="checkbox" id="enabled">
+    <label for="enabled" style="margin:0;">Enabled by default for new emails</label>
+  </div>
+
+  <label>Auto-CC addresses (groups or people)</label>
+  <div id="ccList"></div>
+  <button type="button" id="addCc">+ Add address</button>
+
+  <div class="status" id="status"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+*.crx
+*.pem
+update-manifest.xml
+*.zip

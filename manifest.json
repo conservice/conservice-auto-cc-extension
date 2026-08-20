@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Conservice Auto CC",
+  "version": "1.1.0",
+  "description": "Adds a toggleable auto-CC to one or more configurable addresses (groups or people) on every Gmail message you compose or reply to. Defaults to synergyfunding@conservice.com; manage the list in the toolbar popup.",
+  "permissions": ["storage"],
+  "host_permissions": ["https://mail.google.com/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://mail.google.com/*"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Conservice Auto CC",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
