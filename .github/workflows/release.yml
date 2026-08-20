@@ -1,0 +1,67 @@
+name: Package and release extension
+
+on:
+  push:
+    branches: [prod]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Read manifest version
+        id: version
+        run: |
+          echo "version=$(node -p "require('./manifest.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Get a headless Chromium (for CRX packing only)
+        run: |
+          npm init -y >/dev/null
+          npm install puppeteer >/dev/null
+          echo "chrome_bin=$(node -e "console.log(require('puppeteer').executablePath())")" >> "$GITHUB_ENV"
+
+      - name: Write signing key
+        env:
+          SIGNING_KEY: ${{ secrets.CRX_SIGNING_KEY }}
+        run: printf '%s' "$SIGNING_KEY" > "$RUNNER_TEMP/signing-key.pem"
+
+      - name: Pack extension into a .crx
+        run: |
+          mkdir -p dist/ext
+          cp -r manifest.json content.js content.css popup.html popup.js icons dist/ext/
+          "$chrome_bin" --headless --disable-gpu --no-sandbox \
+            --pack-extension="$PWD/dist/ext" \
+            --pack-extension-key="$RUNNER_TEMP/signing-key.pem"
+          mv dist/ext.crx dist/conservice-auto-cc.crx
+
+      - name: Remove signing key from disk
+        if: always()
+        run: rm -f "$RUNNER_TEMP/signing-key.pem"
+
+      - name: Build update-manifest.xml
+        run: |
+          cat > dist/update-manifest.xml <<EOF
+          <?xml version='1.0' encoding='UTF-8'?>
+          <gupdate xmlns='http://www.google.com/update2/response' protocol='2.0'>
+            <app appid='ilhgnkjkoifoclcdiclhbddhjdpncgff'>
+              <updatecheck codebase='https://github.com/conservice/conservice-auto-cc-extension/releases/latest/download/conservice-auto-cc.crx' version='${{ steps.version.outputs.version }}' />
+            </app>
+          </gupdate>
+          EOF
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: Conservice Auto CC v${{ steps.version.outputs.version }}
+          files: |
+            dist/conservice-auto-cc.crx
+            dist/update-manifest.xml
