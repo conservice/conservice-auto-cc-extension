@@ -1,6 +1,6 @@
 const DEFAULT_SETTINGS = {
-  enabled: true,
-  ccAddresses: ["synergyfunding@conservice.com"],
+  enabled: false,
+  ccAddresses: [],
 };
 
 const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
@@ -98,6 +98,7 @@ function focusToField(root) {
 }
 
 async function addAddressesToCc(root, addresses) {
+  if (!addresses.length) return;
   const ccInput = await revealCcField(root);
   if (!ccInput) return;
   const missing = addresses.filter((address) => !ccRowAlreadyHasAddress(ccInput, address));
@@ -137,7 +138,9 @@ function buildToggleRow(root, settings) {
 
   const addressSpan = document.createElement("span");
   addressSpan.className = "sfac-address";
-  addressSpan.textContent = `(${settings.ccAddresses.join(", ")})`;
+  addressSpan.textContent = settings.ccAddresses.length
+    ? `(${settings.ccAddresses.join(", ")})`
+    : "(no address set -- configure in the toolbar popup)";
   label.appendChild(addressSpan);
 
   checkbox.addEventListener("change", () => {

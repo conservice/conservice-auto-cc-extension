@@ -1,6 +1,6 @@
 const DEFAULT_SETTINGS = {
-  enabled: true,
-  ccAddresses: ["synergyfunding@conservice.com"],
+  enabled: false,
+  ccAddresses: [],
 };
 
 const enabledCheckbox = document.getElementById("enabled");
