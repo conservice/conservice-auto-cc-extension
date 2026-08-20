@@ -31,7 +31,7 @@ jobs:
       - name: Write signing key
         env:
           SIGNING_KEY: ${{ secrets.CRX_SIGNING_KEY }}
-        run: printf '%s' "$SIGNING_KEY" > "$RUNNER_TEMP/signing-key.pem"
+        run: printf '%s' "$SIGNING_KEY" | tr -d '\r' > "$RUNNER_TEMP/signing-key.pem"
 
       - name: Pack extension into a .crx
         run: |
